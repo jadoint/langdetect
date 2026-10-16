@@ -14,15 +14,15 @@ import "unicode"
 // SINGLE switch in Detect's own priority order: Kana beats Han, then Hangul.
 // Japanese is written with Han characters as well as Kana, and both Japan and
 // Korea are on the spam scorer's own spam-country list
-// (internal/service/spamscore_tree.go), so a Japanese string reading as
-// Han-dominant here would quietly widen a Chinese-only leniency into an
-// all-CJK one on a K-pop fanfiction site. A Kana rune is counted as Kana and
+// (asianfanfics-goth/internal/service/spamscore_tree.go), so a Japanese string
+// reading as Han-dominant here would quietly widen a Chinese-only leniency into
+// an all-CJK one on a K-pop fanfiction site. A Kana rune is counted as Kana and
 // nothing else; a Han rune in a Japanese sentence still counts as Han, but the
 // Kana fraction beside it is what says the text is not Chinese.
 //
-// Detect itself is deliberately untouched. Story creation depends on it
-// (internal/web/storyedit/story_create_edit.go), and this project is not the place to move
-// it.
+// Detect itself is deliberately untouched. Goth's story creation depends on it
+// (asianfanfics-goth/internal/web/storyedit/story_create_edit.go), and this
+// module is not the place to change it.
 
 // Profile is a script mix: how much of one piece of text is written in each of
 // the three CJK scripts the spam-trust gate cares about.
@@ -58,11 +58,11 @@ import "unicode"
 //
 // The json tags are load-bearing rather than decorative: a whole Profile is
 // recorded inside the `signals` blob of every spam_trust_hold row
-// (internal/service/spamscore_tree.go), because the hold table's own
-// han_fraction column carries the Han share and nothing else — and a stored
-// 0.60 with no Kana beside it cannot afterwards be told apart from Japanese,
-// which is the one distinction this whole measurement exists to make. Renaming
-// a tag orphans every row already written.
+// (asianfanfics-goth/internal/service/spamscore_tree.go), because the hold
+// table's own han_fraction column carries the Han share and nothing else — and a
+// stored 0.60 with no Kana beside it cannot afterwards be told apart from
+// Japanese, which is the one distinction this whole measurement exists to make.
+// Renaming a tag orphans every row already written.
 type Profile struct {
 	// Letters is the denominator: the count of letter runes PLUS the
 	// Symbol-category CJK-script code points described above (they are not
